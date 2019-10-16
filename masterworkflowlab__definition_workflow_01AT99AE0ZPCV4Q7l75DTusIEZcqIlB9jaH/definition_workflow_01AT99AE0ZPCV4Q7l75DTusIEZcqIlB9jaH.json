@@ -1,0 +1,259 @@
+{
+  "workflow": {
+    "unique_name": "definition_workflow_01AT99AE0ZPCV4Q7l75DTusIEZcqIlB9jaH",
+    "name": "Master",
+    "title": "Master",
+    "type": "generic.workflow",
+    "base_type": "workflow",
+    "variables": [
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "",
+          "scope": "input",
+          "name": "name",
+          "type": "datatype.string",
+          "is_required": false
+        },
+        "unique_name": "variable_workflow_01ATFXP4IJ3C33eXPTEZnjxRNKlNLUJRFJK",
+        "object_type": "variable_workflow"
+      }
+    ],
+    "properties": {
+      "atomic": {
+        "is_atomic": false
+      },
+      "delete_workflow_instance": false,
+      "display_name": "Master",
+      "runtime_user": {
+        "override_target_runtime_user": false,
+        "specify_on_workflow_start": false,
+        "target_default": true
+      },
+      "target": {
+        "target_type": "web-service.endpoint",
+        "target_id": "definition_target_01AHHTT9L9VJ04ehSWxbXojgK3jfq8NFBeT",
+        "execute_on_workflow_target": true
+      }
+    },
+    "object_type": "definition_workflow",
+    "actions": [
+      {
+        "unique_name": "definition_activity_01ATFV8F63SYW5MIztsA614EHsQbhudIHqV",
+        "name": "Run Http JSON Request",
+        "title": "Run Http JSON Request",
+        "type": "workflow.atomic_workflow",
+        "base_type": "subworkflow",
+        "properties": {
+          "display_name": "Run Http JSON Request",
+          "input": {
+            "variable_workflow_01AHJ0AXMMLZL11c9t0wbuQycyW9Dm4oOm2": "users"
+          },
+          "runtime_user": {
+            "target_default": true
+          },
+          "target": {
+            "execute_on_this_target": true,
+            "target_id": "definition_target_01AHHTT9L9VJ04ehSWxbXojgK3jfq8NFBeT",
+            "target_type": "web-service.endpoint"
+          },
+          "workflow_id": "definition_workflow_01AHIA001MQO55sBty3iT6ZosKuMsHvSIcQ"
+        },
+        "object_type": "definition_activity"
+      },
+      {
+        "unique_name": "definition_activity_01ATFY6FM1G7N77FcryNaHjabw3F0Z1120Q",
+        "name": "JSONPath Query",
+        "title": "JSONPath Query",
+        "type": "corejava.jsonpathquery",
+        "base_type": "activity",
+        "properties": {
+          "action_timeout": 180,
+          "continue_on_failure": true,
+          "display_name": "JSONPath Query",
+          "input_json": "$activity.definition_activity_01ATFV8F63SYW5MIztsA614EHsQbhudIHqV.output.variable_workflow_01AHJ2NZIP3FL5vd5o2WEGE0NlTNC9EcAdm$",
+          "jsonpath_queries": [
+            {
+              "jsonpath_query": "$.[?(@.username==\"$workflow.definition_workflow_01AT99AE0ZPCV4Q7l75DTusIEZcqIlB9jaH.input.variable_workflow_01ATFXP4IJ3C33eXPTEZnjxRNKlNLUJRFJK$\")]",
+              "jsonpath_query_name": "username",
+              "jsonpath_query_type": "string"
+            }
+          ],
+          "skip_execution": false
+        },
+        "object_type": "definition_activity"
+      },
+      {
+        "unique_name": "definition_activity_01AU1D2OTLYZT5mwMphDjF2WRf8pGKWwpd6",
+        "name": "Condition Block",
+        "title": "If User is Found",
+        "type": "logic.if_else",
+        "base_type": "activity",
+        "properties": {
+          "continue_on_failure": false,
+          "display_name": "If User is Found",
+          "skip_execution": false
+        },
+        "object_type": "definition_activity",
+        "blocks": [
+          {
+            "unique_name": "definition_activity_01AU1D33CV0CH3lIwij3g6UVorshwKxZv5f",
+            "name": "Condition Branch",
+            "title": "Then",
+            "type": "logic.condition_block",
+            "base_type": "activity",
+            "properties": {
+              "condition": {
+                "left_operand": "$activity.definition_activity_01ATFY6FM1G7N77FcryNaHjabw3F0Z1120Q.output.succeeded$",
+                "operator": "eq",
+                "right_operand": true
+              },
+              "continue_on_failure": false,
+              "display_name": "Then",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_01AU28DHMG1J308PrEgNppY0m8iBg5ojGuG",
+                "name": "Send Email",
+                "title": "Send Yes Email",
+                "type": "email.smtp_send_email",
+                "base_type": "activity",
+                "properties": {
+                  "action_timeout": 180,
+                  "body": "Hey we found that user from our AO Workflow!",
+                  "continue_on_failure": false,
+                  "display_name": "Send Yes Email",
+                  "from": "dubielt@me.com",
+                  "runtime_user": {
+                    "override_target_runtime_user": true,
+                    "runtime_user_id": "definition_runtime_user_01AHHYDD7UMCX0WRi4NJFnbH5SFIXsJ0Srg"
+                  },
+                  "skip_execution": false,
+                  "subject": "Hey we found that user!",
+                  "target": {
+                    "override_workflow_target": true,
+                    "target_id": "definition_target_01ASGIR78AJB01HJYU6wbUplWRo0722qaJ3"
+                  },
+                  "to": "andubiel@cisco.com"
+                },
+                "object_type": "definition_activity"
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_01AU1D39ANHTH6k0hazZikmP77bZpwdCA7Q",
+            "name": "Condition Branch",
+            "title": "Else",
+            "type": "logic.condition_block",
+            "base_type": "activity",
+            "properties": {
+              "condition": {
+                "left_operand": "$activity.definition_activity_01ATFY6FM1G7N77FcryNaHjabw3F0Z1120Q.output.succeeded$",
+                "operator": "eq",
+                "right_operand": false
+              },
+              "continue_on_failure": false,
+              "display_name": "Else",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_01AU2C8NOCG4K2egbzBzHUJOPRGNE8nJDKt",
+                "name": "Send Email",
+                "title": "Send Did Not Find Email",
+                "type": "email.smtp_send_email",
+                "base_type": "activity",
+                "properties": {
+                  "action_timeout": 180,
+                  "body": "Hey we didn't find that user from our AO Workflow!",
+                  "continue_on_failure": false,
+                  "display_name": "Send Did Not Find Email",
+                  "from": "dubielt@me.com",
+                  "runtime_user": {
+                    "override_target_runtime_user": true,
+                    "runtime_user_id": "definition_runtime_user_01AHHYDD7UMCX0WRi4NJFnbH5SFIXsJ0Srg"
+                  },
+                  "skip_execution": false,
+                  "subject": "Hey we didn't find that user!",
+                  "target": {
+                    "override_workflow_target": true,
+                    "target_id": "definition_target_01ASGIR78AJB01HJYU6wbUplWRo0722qaJ3"
+                  },
+                  "to": "andubiel@cisco.com"
+                },
+                "object_type": "definition_activity"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "categories": [
+      "category_1BMfMXSnJMyt5Ihqi7rWJr5N8cf"
+    ]
+  },
+  "categories": {
+    "category_01AHHOEB2NOTR0pYa1EAx29Rpe60RMVDwDd": {
+      "unique_name": "category_01AHHOEB2NOTR0pYa1EAx29Rpe60RMVDwDd",
+      "name": "myfirstcategory",
+      "title": "myfirstcategory",
+      "type": "basic.category",
+      "base_type": "category",
+      "category_type": "custom",
+      "object_type": "category"
+    }
+  },
+  "targets": {
+    "definition_target_01AHHTT9L9VJ04ehSWxbXojgK3jfq8NFBeT": {
+      "unique_name": "definition_target_01AHHTT9L9VJ04ehSWxbXojgK3jfq8NFBeT",
+      "name": "JSONPath Holder",
+      "title": "JSONPath Holder",
+      "type": "web-service.endpoint",
+      "base_type": "target",
+      "object_type": "definition_target",
+      "properties": {
+        "disable_certificate_validation": true,
+        "display_name": "JSONPath Holder",
+        "host": "jsonplaceholder.typicode.com",
+        "no_runtime_user": true,
+        "protocol": "https"
+      }
+    },
+    "definition_target_01ASGIR78AJB01HJYU6wbUplWRo0722qaJ3": {
+      "unique_name": "definition_target_01ASGIR78AJB01HJYU6wbUplWRo0722qaJ3",
+      "name": "SMTP",
+      "title": "SMTP",
+      "type": "email.smtp_endpoint",
+      "base_type": "target",
+      "object_type": "definition_target",
+      "properties": {
+        "display_name": "SMTP",
+        "no_runtime_user": true,
+        "port": 465,
+        "protocol": "SMTP",
+        "server": "smtp.sendgrid.net"
+      }
+    }
+  },
+  "runtime_users": {
+    "definition_runtime_user_01AHHYDD7UMCX0WRi4NJFnbH5SFIXsJ0Srg": {
+      "unique_name": "definition_runtime_user_01AHHYDD7UMCX0WRi4NJFnbH5SFIXsJ0Srg",
+      "name": "tdubiel",
+      "title": "tdubiel",
+      "type": "runtime_user.email_credentials",
+      "base_type": "runtime_user",
+      "object_type": "definition_runtime_user",
+      "properties": {
+        "display_name": "tdubiel",
+        "password": "*****",
+        "sender": "*****"
+      }
+    }
+  },
+  "atomic_workflows": [
+    "definition_workflow_01AHIA001MQO55sBty3iT6ZosKuMsHvSIcQ"
+  ]
+}
